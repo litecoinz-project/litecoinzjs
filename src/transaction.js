@@ -44,7 +44,7 @@ function mkNullDataReplayScript (
 
 /*
  * Given an address, generates a pubkeyhash replay type script needed for the transaction
- * More info: https://github.com/ZencashOfficial/zen/blob/bb93453d39f86f7889e87c50f06400427a66f816/src/script/standard.cpp#L403
+ * More info: https://github.com/litecoinz-project/litecoinz/blob/bb93453d39f86f7889e87c50f06400427a66f816/src/script/standard.cpp#L403
  * @param {String} address
  * @param {Number} blockHeight
  * @param {Number} blockHash
@@ -275,6 +275,10 @@ function serializeTx (txObj: TXOBJ): string {
   _buf16.writeUInt16LE(txObj.version, 0)
   serializedTx += _buf16.toString('hex')
 
+  // versionGroupId
+  _buf16.writeUInt16LE(txObj.versionGroupId, 0)
+  serializedTx += _buf16.toString('hex')
+
   // History
   serializedTx += zbufferutils.numToVarInt(txObj.ins.length)
   txObj.ins.map((i) => {
@@ -314,6 +318,14 @@ function serializeTx (txObj: TXOBJ): string {
   _buf16.writeUInt16LE(txObj.locktime, 0)
   serializedTx += _buf16.toString('hex')
 
+  // expiryHeight
+  _buf16.writeUInt16LE(txObj.expiryHeight, 0)
+  serializedTx += _buf16.toString('hex')
+
+  // valueBalance
+  _buf16.writeUInt16LE(txObj.valueBalance, 0)
+  serializedTx += _buf16.toString('hex')
+
   return serializedTx
 }
 
@@ -331,7 +343,7 @@ function createRawTx (
   blockHeight: number,
   blockHash: string
 ): TXOBJ {
-  var txObj = { locktime: 0, version: 1, ins: [], outs: [] }
+  var txObj = { locktime: 0, version: 4, ins: [], outs: [], versionGroupId: 2301567109, expiryHeight: 0, valueBalance: 0 }
 
   txObj.ins = history.map(function (h) {
     return {
